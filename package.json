@@ -1,6 +1,6 @@
 {
   "name": "serialsamsung",
-  "version": "0.0.2",
+  "version": "0.0.1-legacy",
   "description": "",
   "type": "module",
   "module": "./src/index.js",
@@ -21,7 +21,7 @@
   "author": "Rasmus Porsager <rasmus@porsager.com",
   "license": "WTFPL",
   "optionalDependencies": {
-    "serialport": "9.1.0"
+    "serialport": "6.2.2"
   },
   "keywords": [
     "serial",
