@@ -1,6 +1,8 @@
 import TV from '../src/index.js'
 import { t } from 'fantestic'
 
+/*
+
 t('Turns on TV', { timeout: 50000 }, async() => {
   const tv = TV({ id: 1 })
 
@@ -10,3 +12,5 @@ t('Turns on TV', { timeout: 50000 }, async() => {
     tv.close()
   ]
 })
+
+*/
