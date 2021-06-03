@@ -1,0 +1,40 @@
+{
+  "name": "serialsamsung",
+  "version": "0.0.1",
+  "description": "",
+  "type": "module",
+  "module": "./src/index.js",
+  "main": "./cjs/index.js",
+  "exports": {
+    "import": "./src/index.js",
+    "default": "./cjs/index.js"
+  },
+  "scripts": {
+    "test": "node test",
+    "build": "node build.cjs",
+    "prepublishOnly": "npm run build"
+  },
+  "files": [
+    "src",
+    "cjs"
+  ],
+  "author": "Rasmus Porsager <rasmus@porsager.com",
+  "license": "WTFPL",
+  "optionalDependencies": {
+    "serialport": "6.2.2"
+  },
+  "keywords": [
+    "serial",
+    "rs232",
+    "232",
+    "lg",
+    "protocol",
+    "serialport",
+    "remote",
+    "tv",
+    "signage"
+  ],
+  "devDependencies": {
+    "fantestic": "0.0.1"
+  }
+}
