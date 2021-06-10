@@ -61,7 +61,7 @@ export default async function Connection({
   c.on('close', end)
 
   return connections[path] = ({
-    close: () => c.close(),
+    close: () => new Promise(resolve => c.close(() => (end(), resolve()))),
     send(command, id, data) {
       return new Promise((resolve, reject) => {
         queue.push({ resolve, reject, command, id, data, retries })
@@ -76,7 +76,7 @@ export default async function Connection({
 
   function startIdleTimeout() {
     clearTimeout(idleTimer)
-    idleTimer = setTimeout(() => (end(new Error('Idle Timeout')), c.close()), idleTimeout)
+    idleTimer = setTimeout(() => (end(new Error('Idle Timeout')), c.close(end)), idleTimeout)
   }
 
   function queryTimedOut() {
@@ -129,10 +129,13 @@ export default async function Connection({
   }
 
   function end(err) {
+    if (path in connections === false)
+      return
+
+    delete connections[path]
     clearTimeout(idleTimer)
     current && current.reject(err)
     queue.forEach(x => x.reject(err))
     queue = []
-    delete connections[path]
   }
 }
