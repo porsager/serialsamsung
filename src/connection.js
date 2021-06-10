@@ -1,5 +1,4 @@
 import SP from 'serialport'
-import net from 'net'
 
 const connections = {}
 
