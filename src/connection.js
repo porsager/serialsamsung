@@ -1,18 +1,16 @@
-import SP from 'serialport'
+import { SerialPort } from 'serialport'
 
 const connections = {}
 
-async function list() {
-  return (await SP.list()).map(x => (
-    x.path = x.path || x.comName,
-    x
-  ))
+function list() {
+  return SerialPort.list()
 }
 
 export default async function Connection({
   idleTimeout = 10000,
   queryTimeout = 2000,
   retries = 5,
+  baudRate = 9600,
   path
 } = {}) {
   path = typeof path === 'function'
@@ -24,8 +22,7 @@ export default async function Connection({
     return connections[path]
 
   let queue = []
-
-  const c = new SP(path)
+  const c = new SerialPort({ path, baudRate })
       , header = Buffer.from([0xaa])
 
   let message = Buffer.alloc(0)
@@ -39,19 +36,11 @@ export default async function Connection({
     next()
   })
 
-  c.on('connect', () => {
-    open = true
-    next()
-  })
-
   c.on('data', function ondata(x) {
     startIdleTimeout(idleTimer)
-
     message = Buffer.concat([message, x])
-
     if (!message[3] || message[3] > message.length - 5)
       return
-
     current && handle(message.slice(4, 4 + message[3]))
     message = message.slice(4 + message[3])
   })
@@ -81,7 +70,6 @@ export default async function Connection({
   function queryTimedOut() {
     if (!current)
       return
-
     current.retries-- > 0
       ? write(current)
       : (current.reject(new Error('Query Timed Out')), current = null)
@@ -97,7 +85,6 @@ export default async function Connection({
       x.data.length,
       ...x.data
     ])
-
     c.write(Buffer.concat([
       header,
       body,
@@ -118,7 +105,6 @@ export default async function Connection({
       current.resolve(data)
     else
       current.reject(data)
-
     current = null
     next()
   }
@@ -130,7 +116,6 @@ export default async function Connection({
   function end(err) {
     if (path in connections === false)
       return
-
     delete connections[path]
     clearTimeout(idleTimer)
     current && current.reject(err)
