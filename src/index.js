@@ -55,11 +55,6 @@ export default function(options = {}) {
   }
 
   async function send(command, ...data) {
-    return (await Connection(options)).send(command, id, data.map(stringify))
+    return (await Connection(options)).send(command, id, data.map(x => typeof x === 'string' ? parseInt(x, 16) : x))
   }
-}
-
-function stringify(x) {
-  typeof x === 'number' && (x = x.toString(16))
-  return (x.length === 1 ? '0' : '') + x
 }
